@@ -1,5 +1,7 @@
 package com.scalaDemo
 
+import com.scalaDemo.driver.Driver
+
 import scala.collection._
 import org.scalatest.{Assertions, FunSpec, Matchers}
 import org.junit.Test
@@ -10,21 +12,12 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class AppTest extends FunSpec with Matchers {
 
-  describe("An ArrayStack") {
+  describe("A Spark Driver") {
 
-  it("should pop values in last-in-first-out order") {
-  val stack = new mutable.ArrayStack[Int]
-  stack.push(1)
-  stack.push(2)
-  assert(stack.pop() === 2)
-  assert(stack.pop() === 1)
-}
+  it("should return spark session") {
+  val spark = new Driver("Scala Spark test").returnSparkSession()
+  assert(spark.sparkContext.getConf.get("spark.app.name") === "Scala Spark test")
 
-  it("should throw RuntimeException if an empty array stack is popped") {
-  val emptyStack = new mutable.ArrayStack[Int]
-  intercept[RuntimeException] {
-  emptyStack.pop()
-}
 }
 }
 }
