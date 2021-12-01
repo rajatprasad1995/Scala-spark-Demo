@@ -37,6 +37,27 @@ class App(spark: SparkSession, conf:(String, String, String, String, String)){
         ex.showTables()
       }
 
+      case "task1" => {
+
+        val task1 = new AveragePurchaseCustomer(spark, conf)
+        task1.calculateAverage()
+
+
+
+      }
+      case "task2" => {
+
+        val task2 = new AverageMonthlySales(spark, conf)
+        task2.calculateAverage()
+
+      }
+      case "task3" => {
+
+        val task3 = new AverageSalesProduct(spark, conf)
+        task3.calculateAverage()
+
+      }
+
       case _ => {
 
         log.error("se ha equivocado con el argumento")
