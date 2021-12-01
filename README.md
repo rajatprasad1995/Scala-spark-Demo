@@ -16,9 +16,25 @@ Create a folder **data** in the source directory and create two subdirectories
 - csvFiles
 - database
 
-Paste all the CSV files in the sub-directory **csvFiles** and **database.sqlite** file in database.
+Create a directory **data** in and within it create two sub-directories **csvFiles**  and **database**.
+
+Paste all the CSV files in the sub-directory **csvFiles** and the only sqlite file database.sqlite file in **database** sub-directory.
+
+````
+./Scala-spark-Demo
+|
+|-------data
+          |
+          |------csvFiles
+          |          |
+          |          |---------all csv files here
+          |
+          |------database
+                   |
+                   |---------database.sqlite
 
 
+````
 Task Description
 -----
 
@@ -43,3 +59,7 @@ where task1 is the first task, for executing second task, simply replace **task1
 
 The output will be written in the **output** sub-directory, output of each task will be written in a csv file named after the task. 
 
+Output
+-------
+
+You can find the output generated in the **output** sub-directory in the root.
