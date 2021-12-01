@@ -165,7 +165,7 @@
           <junitxml>.</junitxml>
           <filereports>TestSuiteReport.txt</filereports>
           <!-- Comma separated list of JUnit test class names to execute -->
-          <jUnitClasses>com.scalaDemo.AppTest,com.scalaDemo.driver.DriverTest</jUnitClasses>
+          <jUnitClasses>com.scalaDemo.AppTest,com.scalaDemo.driver.DriverTest,com.scalaDemo.loadConfig.LoadConfigTest</jUnitClasses>
         </configuration>
         <executions>
           <execution>
