@@ -7,7 +7,11 @@ object WriteData {
 
   def saveToCsv(spark: SparkSession, outputDF: DataFrame,  path: String): Unit = {
 
-    outputDF.repartition(1).write.mode(SaveMode.Overwrite).csv(s"${path}.csv")
+    outputDF.repartition(1)
+      .write
+      .option("header", "true")
+      .mode(SaveMode.Overwrite)
+      .csv(s"${path}.csv")
 
 
   }

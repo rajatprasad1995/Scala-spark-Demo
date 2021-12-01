@@ -11,7 +11,6 @@ object Readdata {
       .format("jdbc")
       .option("url", s"jdbc:sqlite:${database}")
       .option("dbtable", tableName)
-      //.option("customSchema", schema)
       .option("driver", "org.sqlite.JDBC")
       .load()
     df
