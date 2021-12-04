@@ -55,9 +55,35 @@ class AppTest extends FunSpec with Matchers {
       assert(valueToCheck === 5)
       assert(valueToCheck2 === 2)
     }
-  }
 
+  }
+  describe("testing task two") {
+    it("counting rows for a state") {
+      import spark.implicits._
+      val task1 = new App(spark, conf)
+      task1.run("task2")
+
+      val resultSchema = StructType(Array(
+        StructField("origin state",StringType,false),
+        StructField("Pesticide Name",StringType,false),
+        StructField("PEST CODE",StringType,false),
+        StructField("rank",IntegerType,false)
+      ))
+
+
+      val task1DF = spark.read
+        .option("header", true)
+        .schema(resultSchema)
+        .csv(s"${Paths.get(conf._5, "task2").toString}.csv")
+
+      task1DF.show(10)
+      val valueToCheck = task1DF.where($"origin state" === "WA" && $"PEST CODE"==="042")
+        .select($"rank").collect()(0)(0)
+
+      assert(valueToCheck === 1)
+    }
 
 
 
 }
+  }

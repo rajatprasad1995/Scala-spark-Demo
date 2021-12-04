@@ -34,8 +34,8 @@ class CommomPesticideByState(spark: SparkSession, conf: (String, String, String,
     // setting the join condition
     val joinCondition = filteredResultDataDF.col("sample_pk") === preparedSampleDataDF.col("sample_pk")
 
-    // broadcasting the table containg sample data because it has fewer rows
-    val joinedData = filteredResultDataDF.join(broadcast(preparedSampleDataDF), joinCondition, "inner")
+
+    val joinedData = filteredResultDataDF.join(preparedSampleDataDF, joinCondition, "inner")
       .select($"pestcode", $"origin state").persist()
 
 
@@ -59,7 +59,7 @@ class CommomPesticideByState(spark: SparkSession, conf: (String, String, String,
     //broadcasting to improve performace
     val finalData = rankedDF.join(broadcast(pesticideDataDF), joinCondition2, "inner")
       .drop(rankedDF.col("Pest Code 1"))
-      .select($"origin state",$"Pesticide Name",$"rank",$"count by origin and pest code",$"count by origin",$"% of total samples")
+      .select($"origin state",$"Pesticide Name",$"PEST CODE",$"rank",$"count by origin and pest code",$"count by origin",$"% of total samples")
 
 
     //setting path to write data
