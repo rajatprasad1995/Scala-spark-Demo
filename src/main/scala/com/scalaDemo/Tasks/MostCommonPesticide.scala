@@ -14,7 +14,7 @@ class MostCommonPesticide(spark:SparkSession, conf:(String, String, String, Stri
   import spark.implicits._
 
   def calculateMostCommon():Unit={
-    log.info("Calculating how often a pesticide was found in the study")
+    log.info("Calculating how often a pesticide was found in the study task 1")
     // read data
 
     val pathDatabase = Paths.get(conf._1, conf._2, conf._4)
@@ -34,7 +34,7 @@ class MostCommonPesticide(spark:SparkSession, conf:(String, String, String, Stri
     ))
 
     val keyPesticideDataDF = fetchCSV(spark, pestCodeSchema, path= pathCsv.toString, delimiter = ",", header = true)
-      .withColumn("Pest Code",regexp_replace($"Pest Code", " ",""))
+      .withColumn("Pest Code",regexp_replace($"Pest Code", "\\s+",""))
 
 
 

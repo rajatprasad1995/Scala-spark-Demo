@@ -1,6 +1,6 @@
 package com.scalaDemo
 
-import com.scalaDemo.Tasks.MostCommonPesticide
+import com.scalaDemo.Tasks.{CommomPesticideByState, MostCommonPesticide}
 import com.scalaDemo.driver.Driver
 import com.scalaDemo.loadConfig.LoadConfig
 import org.apache.log4j.Logger
@@ -32,6 +32,13 @@ class App(spark: SparkSession, conf:(String, String, String, String, String)){
 
         val task1 = new MostCommonPesticide(spark, conf)
         task1.calculateMostCommon()
+
+      }
+
+      case "task2" => {
+
+        val task = new CommomPesticideByState(spark, conf)
+        task.calculateMostCommonByState()
 
       }
 

@@ -39,6 +39,7 @@ Task Description
 -----
 
 - In the first task, I calculated the frequency with which each pesticide was found in descending order.
+- In the second task, I calculated the most used pesticide in each state.
 
 To Install
 -------
