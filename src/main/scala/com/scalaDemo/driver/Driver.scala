@@ -3,6 +3,7 @@ package com.scalaDemo.driver
 import org.apache.spark.sql.SparkSession
 
 class Driver(name:String) {
+  // creating a spark driver
 
   def returnSparkSession(): SparkSession ={
     val spark = SparkSession

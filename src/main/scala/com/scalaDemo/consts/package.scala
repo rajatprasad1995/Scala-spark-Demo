@@ -12,7 +12,7 @@ package object consts {
   val pathCsvPestCode = Paths.get(conf._1, conf._3, "pest_codes.csv").toString
   val pathCsvStateCode = Paths.get(conf._1, conf._3, "state_codes.csv").toString
 
-  // setting schema of csv file
+  // setting schema of csv files
   val pestCodeSchema = StructType(Array(
     StructField("Pest Code",StringType,false),
     StructField("Pesticide Name",StringType,false)

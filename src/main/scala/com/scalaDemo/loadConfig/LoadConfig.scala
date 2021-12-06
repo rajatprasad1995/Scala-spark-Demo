@@ -6,6 +6,7 @@ object LoadConfig {
 
   def returnConfig()={
 
+    //reading application.conf file and loading configurations
     val defaultConfig = ConfigFactory.load()
 
     val rootpathInput = defaultConfig.getString("data.input.main.path")
