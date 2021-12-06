@@ -11,13 +11,11 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.apache.log4j.Logger
 import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
-
+import com.scalaDemo.consts._
 import java.nio.file.Paths
 
 @RunWith(classOf[JUnitRunner])
 class AppTest extends FunSpec with Matchers {
-
-  val conf = LoadConfig.returnConfig()
 
   val log = Logger.getLogger(getClass.getName)
   log.info("empezando los tests")
@@ -32,7 +30,7 @@ class AppTest extends FunSpec with Matchers {
   describe("testing task one") {
     it("counting for a pest code") {
       import spark.implicits._
-      val task1 = new App(spark, conf)
+      val task1 = new App(spark)
       task1.run("task1")
 
       val resultSchema = StructType(Array(
@@ -60,7 +58,7 @@ class AppTest extends FunSpec with Matchers {
   describe("testing task two") {
     it("counting rows for a state") {
       import spark.implicits._
-      val task1 = new App(spark, conf)
+      val task1 = new App(spark)
       task1.run("task2")
 
       val resultSchema = StructType(Array(

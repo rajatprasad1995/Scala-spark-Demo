@@ -1,18 +1,20 @@
 package com.scalaDemo.Tasks
 
 
-import com.scalaDemo.utils.Readdata.{fetchCSV, fetchTable}
+import com.scalaDemo.utils.PrepareData.{getPreparedResultDataDF, getPreparedSampledData}
+import com.scalaDemo.utils.ReadData.{fetchCSV, fetchTable}
 import com.scalaDemo.utils.WriteData.saveToCsv
 import org.apache.log4j.Logger
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.apache.spark.sql.functions.{broadcast, coalesce, desc, rank, regexp_replace, when}
+import org.apache.spark.sql.functions.{broadcast, coalesce, col, desc, rank, regexp_replace, when}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import com.scalaDemo.consts._
 
 import java.nio.file.Paths
 
 
-class CommomPesticideByState(spark: SparkSession, conf: (String, String, String, String, String)) {
+class CommomPesticideByState(spark: SparkSession) {
 
   val log = Logger.getLogger(getClass.getName)
 
@@ -21,15 +23,10 @@ class CommomPesticideByState(spark: SparkSession, conf: (String, String, String,
   def calculateMostCommonByState(): Unit = {
     log.info("Calculating the most common pesticide used by each state in the United  States")
 
-    // setting path to read data
-
-    val pathDatabase = Paths.get(conf._1, conf._2, conf._4)
-    val pathCsvPestCode = Paths.get(conf._1, conf._3, "pest_codes.csv")
-
     // reading the sqlite database
-    val preparedSampleDataDF = getPreparedSampledData(pathDatabase.toString)
+    val preparedSampleDataDF = getPreparedSampledData(spark, pathDatabase, List("sample_pk", "origin state"))
 
-    val filteredResultDataDF = getResultDataDF(pathDatabase.toString)
+    val filteredResultDataDF = getPreparedResultDataDF(spark, pathDatabase, List("pestcode", "sample_pk"))
 
     // setting the join condition
     val joinCondition = filteredResultDataDF.col("sample_pk") === preparedSampleDataDF.col("sample_pk")
@@ -44,12 +41,9 @@ class CommomPesticideByState(spark: SparkSession, conf: (String, String, String,
 
     // reading name of csv file containing names of each pesticide, first setting the schema of the file
 
-    val pestCodeSchema = StructType(Array(
-      StructField("Pest Code",StringType,false),
-      StructField("Pesticide Name",StringType,false)
-    ))
 
-    val pesticideDataDF = fetchCSV(spark, pestCodeSchema, pathCsvPestCode.toString, delimiter = ",", header = true)
+
+    val pesticideDataDF = fetchCSV(spark, pestCodeSchema, pathCsvPestCode, delimiter = ",", header = true)
       .withColumn("Pest Code",regexp_replace($"Pest Code", "\\s+",""))
 
     //joining the ranked df and pesticide df
@@ -70,42 +64,8 @@ class CommomPesticideByState(spark: SparkSession, conf: (String, String, String,
 
   }
 
-  def getPreparedSampledData(database: String): DataFrame = {
-    val sampleDataDF = fetchTable(spark, "sampledata15", "", database)
-      .select($"sample_pk", $"origin", $"growst", $"packst", $"distst")
 
 
-    val filteredSampleDataDF = sampleDataDF.filter($"origin" === "1")
-
-    val coalesceSampleDataDF = filteredSampleDataDF
-      .withColumn("growst", regexp_replace($"growst", "\\s+", ""))
-      .withColumn("packst", regexp_replace($"packst", "\\s+", ""))
-      .withColumn("distst", regexp_replace($"distst", "\\s+", ""))
-      .withColumn("growst", when($"growst" === "", null).otherwise($"growst"))
-      .withColumn("packst", when($"packst" === "", null).otherwise($"packst"))
-      .withColumn("distst", when($"distst" === "", null).otherwise($"distst"))
-      .withColumn("origin state", coalesce($"growst", $"packst", $"distst"))
-      .withColumn("origin state", regexp_replace($"origin state", "\\s+", ""))
-      .where($"origin state".isNotNull)
-      .filter($"origin state" =!= "")
-
-    coalesceSampleDataDF.select($"sample_pk", $"origin state")
-
-  }
-
-  def getResultDataDF(database: String): DataFrame = {
-    val resultDataDF = fetchTable(spark, "resultsdata15", "", database.toString).select($"pestcode", $"sample_pk")
-
-
-    val filteredResultDataDF = resultDataDF.withColumn("pestcode", regexp_replace($"pestcode", "\\s+", ""))
-      .withColumn("sample_pk", regexp_replace($"sample_pk", "\\s+", ""))
-      .where($"pestcode".isNotNull)
-      .filter($"pestcode" =!= "")
-      .where($"sample_pk".isNotNull)
-      .filter($"sample_pk" =!= "")
-    filteredResultDataDF
-
-  }
 
   def calculateRank(joinedData: DataFrame): DataFrame = {
     val countByState = joinedData.groupBy($"origin state").count()

@@ -1,15 +1,16 @@
 package com.scalaDemo.Tasks
 
-import com.scalaDemo.utils.Readdata.{fetchCSV, fetchTable}
+import com.scalaDemo.utils.ReadData.{fetchCSV, fetchTable}
 import com.scalaDemo.utils.WriteData.{saveToCsv}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{desc, regexp_replace}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import com.scalaDemo.consts._
 
 import java.nio.file.Paths
 
-class MostCommonPesticide(spark:SparkSession, conf:(String, String, String, String, String)) {
+class MostCommonPesticide(spark:SparkSession) {
   val log = Logger.getLogger(getClass.getName)
   import spark.implicits._
 
@@ -17,11 +18,8 @@ class MostCommonPesticide(spark:SparkSession, conf:(String, String, String, Stri
     log.info("Calculating how often a pesticide was found in the study task 1")
     // read data
 
-    val pathDatabase = Paths.get(conf._1, conf._2, conf._4)
-
-    val pathCsv = Paths.get(conf._1, conf._3, "pest_codes.csv")
     // reading the sqlite database
-    val resultDataDF = fetchTable(spark, "resultsdata15", "", pathDatabase.toString).select($"pestcode", $"testclass")
+    val resultDataDF = fetchTable(spark, "resultsdata15", "", pathDatabase).select($"pestcode", $"testclass")
 
     // reading the CSV file
 
@@ -33,7 +31,7 @@ class MostCommonPesticide(spark:SparkSession, conf:(String, String, String, Stri
       StructField("Test Class",StringType,false)
     ))
 
-    val keyPesticideDataDF = fetchCSV(spark, pestCodeSchema, path= pathCsv.toString, delimiter = ",", header = true)
+    val keyPesticideDataDF = fetchCSV(spark, pestCodeSchema, path= pathCsvPestCode, delimiter = ",", header = true)
       .withColumn("Pest Code",regexp_replace($"Pest Code", "\\s+",""))
 
 

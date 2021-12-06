@@ -1,8 +1,7 @@
 package com.scalaDemo
 
-import com.scalaDemo.Tasks.{CommomPesticideByState, MostCommonPesticide}
+import com.scalaDemo.Tasks.{CommomPesticideByState, MostCommonPesticide, RelationPesticideStateAndCommodity}
 import com.scalaDemo.driver.Driver
-import com.scalaDemo.loadConfig.LoadConfig
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 
@@ -10,9 +9,8 @@ import org.apache.spark.sql.SparkSession
 object App {
 
   def main(args : Array[String]) {
-    val conf   =LoadConfig.returnConfig()
     val spark = new Driver("Scala Spark Demo").returnSparkSession()
-    val app = new App(spark, conf)
+    val app = new App(spark)
     app.run(args(0))
     spark.stop()
   }
@@ -20,7 +18,7 @@ object App {
 }
 
 
-class App(spark: SparkSession, conf:(String, String, String, String, String)){
+class App(spark: SparkSession){
   val log = Logger.getLogger(getClass.getName)
   def run(task:String) {
 
@@ -30,18 +28,25 @@ class App(spark: SparkSession, conf:(String, String, String, String, String)){
 
       case "task1" => {
 
-        val task1 = new MostCommonPesticide(spark, conf)
+        val task1 = new MostCommonPesticide(spark)
         task1.calculateMostCommon()
 
       }
 
       case "task2" => {
 
-        val task = new CommomPesticideByState(spark, conf)
+        val task = new CommomPesticideByState(spark)
         task.calculateMostCommonByState()
 
       }
 
+
+      case "task3" => {
+
+        val task = new RelationPesticideStateAndCommodity(spark)
+        task.investigateRelation()
+
+      }
 
       case _ => {
 
@@ -49,8 +54,6 @@ class App(spark: SparkSession, conf:(String, String, String, String, String)){
 
       }
     }
-
-
 
   }
 }

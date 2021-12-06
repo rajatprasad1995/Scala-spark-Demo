@@ -40,6 +40,8 @@ Task Description
 
 - In the first task, I calculated the frequency with which each pesticide was found in descending order.
 - In the second task, I calculated the most used pesticide in each state.
+- In the third task, I investigated whether there exist a relationship between state and pesticide as well as relationship between type of crop and pesticide.
+
 
 To Install
 -------
@@ -64,3 +66,68 @@ Output
 -------
 
 You can find the output generated in the **output** sub-directory in the root.
+
+Final Structure
+-------
+
+After obtaining all the csv files and sqlite database from kaggle, executing installer.cmd and running any job of your choice, the source directory will have the following structure.
+
+````
+./Scala-spark-Demo
+|
+|-------.github
+|          |
+|          |------workflows
+|                     |
+|                     |---------maven.yml
+|
+|-------data
+|          |
+|          |
+|          |------csvFiles
+|          |         |----------all csv files found in the data section
+|          |
+|          |------database
+|                  |-----------database.sqlite
+|         
+|-------output
+|           |
+|           |
+|           |
+|           |--------task1.csv
+|           |--------task2.csv
+|           |--------task3-Commodity-Pest.csv
+|           |--------task3-State-Pest.csv
+|           
+|--------src
+|          |      
+|          |
+|          |-------main
+|          |
+|          |
+|          |--------test 
+|
+|----------target
+|
+|
+|
+|-----------test-data
+|               |
+|               |----------csvFiles
+|               |            |----------all csv files            
+|               |  
+|               |----------database
+|                             |-------test-database.sqlite
+|               
+|-----------test-output
+|
+|
+|-----------installer.cmd
+|
+|
+|------------run.cmd
+|
+|
+|-----------pom.xml
+
+````
